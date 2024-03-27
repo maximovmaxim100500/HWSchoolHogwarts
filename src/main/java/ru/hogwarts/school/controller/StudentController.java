@@ -29,18 +29,22 @@ public class StudentController {
     public Student createStudent(@RequestBody Student student) {
         return studentService.createStudent(student);
     }
+
     @PutMapping
-    public ResponseEntity<Student> editStudent (@RequestBody Student student) {
+    public ResponseEntity<Student> editStudent(@RequestBody Student student) {
         Student editStudent = studentService.editStudent(student);
         if (editStudent == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(editStudent);
     }
+
     @DeleteMapping("{id}")
-    public Student deleteStudent (@PathVariable Long id) {
-        return studentService.removeStudent(id);
+    public ResponseEntity deleteStudent(@PathVariable Long id) {
+        studentService.removeStudent(id);
+        return ResponseEntity.ok().build();
     }
+
     @GetMapping("{age}")
     public Collection<Student> getStudentByAge(@PathVariable int age) {
         return studentService.studentsByAge(age);
