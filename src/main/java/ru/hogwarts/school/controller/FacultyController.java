@@ -49,4 +49,14 @@ public class FacultyController {
     public Collection<Faculty> getStudentByAge(@PathVariable String color) {
         return facultyService.facultyByColor(color);
     }
+    @GetMapping
+    public ResponseEntity findFacultyByName(@RequestParam(required = false) String name, @RequestParam(required = false) String color) {
+        if (name != null && !name.isBlank()) {
+            return ResponseEntity.ok(facultyService.facultyByName(name));
+        }
+        if (color != null && !color.isBlank()) {
+            return ResponseEntity.ok(facultyService.facultyByColor(color));
+        }
+        return ResponseEntity.status(404).build();
+    }
 }

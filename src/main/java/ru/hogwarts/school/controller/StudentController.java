@@ -50,4 +50,8 @@ public class StudentController {
         return studentService.studentsByAge(age);
     }
 
+    @GetMapping
+    public ResponseEntity findByAgeBetween(@RequestParam int minAge, @RequestParam int maxAge) {
+        return ResponseEntity.ok(studentService.studentsByAgeBetween(minAge, maxAge));
+    }
 }
