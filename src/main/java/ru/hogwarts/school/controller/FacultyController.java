@@ -3,9 +3,11 @@ package ru.hogwarts.school.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.model.Faculty;
+import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.FacultyService;
 
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping("faculty")
@@ -45,12 +47,13 @@ public class FacultyController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("{color}")
-    public Collection<Faculty> getStudentByAge(@PathVariable String color) {
+    @GetMapping("/facultyByColor")
+    public Collection<Faculty> getFacultyByColor(@RequestParam String color) {
         return facultyService.facultyByColor(color);
     }
-    @GetMapping
-    public ResponseEntity findFacultyByName(@RequestParam(required = false) String name, @RequestParam(required = false) String color) {
+
+    @GetMapping("/facultyByNameOrColor")
+    public ResponseEntity findFacultyByNameOrColor(@RequestParam(required = false) String name, @RequestParam(required = false) String color) {
         if (name != null && !name.isBlank()) {
             return ResponseEntity.ok(facultyService.facultyByName(name));
         }
@@ -58,5 +61,10 @@ public class FacultyController {
             return ResponseEntity.ok(facultyService.facultyByColor(color));
         }
         return ResponseEntity.status(404).build();
+    }
+
+    @GetMapping("/studentsOfFaculty")
+    public List<Student> getStudentsOfFaculty(@RequestParam long facultyId) {
+        return facultyService.findFaculty(facultyId).getStudents();
     }
 }

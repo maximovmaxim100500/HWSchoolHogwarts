@@ -2,6 +2,7 @@ package ru.hogwarts.school.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.hogwarts.school.exeptions.RecordNotFoundExeption;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.StudentRepository;
 
@@ -23,7 +24,7 @@ public class StudentService {
     }
 
     public Student findStudent(long id) {
-        return studentRepository.findById(id).get();
+        return studentRepository.findById(id).orElseThrow(RecordNotFoundExeption::new);
     }
 
     public Student editStudent(Student student) {
@@ -34,11 +35,7 @@ public class StudentService {
         studentRepository.deleteById(id);
     }
 
-    public Collection<Student> studentsByAge(int age) {
-        return studentRepository.findByAge(age);
-    }
-
-    public Collection<Student> studentsByAgeBetween(int minAge, int maxAge) {
-        return studentRepository.findByAgeBetween(minAge, maxAge);
+    public Collection<Student> studentsByAgeBetween(Integer minAge, Integer maxAge) {
+        return studentRepository.findAllByAgeBetween(minAge, maxAge);
     }
 }
