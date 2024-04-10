@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 @RestController
 @RequestMapping("student")
@@ -57,39 +58,38 @@ public class StudentController {
     }
 
     @GetMapping("/ageBetween")
-    public ResponseEntity findAllByAgeBetween(@RequestParam Integer minAge, @RequestParam Integer maxAge) {
-        return ResponseEntity.ok(studentService.studentsByAgeBetween(minAge, maxAge));
+    public ResponseEntity <List<Student>>findAllByAgeBetween(@RequestParam Integer minAge, @RequestParam Integer maxAge) {
+        List<Student> students = studentService.studentsByAgeBetween(minAge, maxAge);
+        return ResponseEntity.ok(students);
     }
 
     @GetMapping("/facultyOfStudent")
     public Faculty getFacultyOfStudent(@RequestParam long studentId) {
         return studentService.findStudent(studentId).getFaculty();
     }
+
     @PostMapping(value = "/{id}/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> uploadAvatar(@PathVariable Long id, @RequestParam MultipartFile avatar) throws IOException {
         if (avatar.getSize() > 1024 * 300) {
             return ResponseEntity.badRequest().body("File is too big");
         }
-
         studentService.uploadAvatar(id, avatar);
         return ResponseEntity.ok().build();
     }
+
     @GetMapping(value = "/{id}/avatar/preview")
     public ResponseEntity<byte[]> downloadAvatar(@PathVariable Long id) {
         Avatar avatar = studentService.findAvatar(id);
-
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.parseMediaType(avatar.getMediaType()));
         headers.setContentLength(avatar.getData().length);
-
         return ResponseEntity.status(HttpStatus.OK).headers(headers).body(avatar.getData());
     }
+
     @GetMapping(value = "/{id}/avatar")
     public void downloadAvatar(@PathVariable Long id, HttpServletResponse response) throws IOException {
         Avatar avatar = studentService.findAvatar(id);
-
         Path path = Path.of(avatar.getFilePath());
-
         try (InputStream is = Files.newInputStream(path);
              OutputStream os = response.getOutputStream();) {
             response.setStatus(200);

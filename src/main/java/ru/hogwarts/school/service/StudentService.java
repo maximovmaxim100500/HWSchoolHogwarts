@@ -15,6 +15,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.List;
 
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
@@ -48,7 +49,7 @@ public class StudentService {
         studentRepository.deleteById(id);
     }
 
-    public Collection<Student> studentsByAgeBetween(Integer minAge, Integer maxAge) {
+    public List<Student> studentsByAgeBetween(Integer minAge, Integer maxAge) {
         return studentRepository.findAllByAgeBetween(minAge, maxAge);
     }
     public Avatar findAvatar(long studentId) {
