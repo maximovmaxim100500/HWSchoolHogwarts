@@ -8,12 +8,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.AvatarRepository;
@@ -26,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -72,9 +69,9 @@ public class FacultyControllerWebMvcTest {
                         .get("/faculty/" + id)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(id))
-                .andExpect(jsonPath("$[0].name").value(name))
-                .andExpect(jsonPath("$[0].color").value(color));
+                .andExpect(jsonPath("$.id").value(id))
+                .andExpect(jsonPath("$.name").value(name))
+                .andExpect(jsonPath("$.color").value(color));
 
     }
 
@@ -159,7 +156,8 @@ public class FacultyControllerWebMvcTest {
         when(facultyRepository.findByColorIgnoreCase(eq(color))).thenReturn(faculties);
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/faculty/facultyByColor?color=" + color))
+                        .get("/faculty/facultyByColor?color=" + color)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(id))
                 .andExpect(jsonPath("$[0].name").value(name))
@@ -190,24 +188,30 @@ public class FacultyControllerWebMvcTest {
 
     @Test
     void getStudentsOfFacultyTest() throws Exception {
-        var f = new Faculty(null, "IT", "red");
-        var f1 = template.postForEntity("/faculty", f, Faculty.class).getBody();
+        Student student1 = new Student(1L, "s1", 25);
+        Student student2 = new Student(2L, "s2", 30);
 
-        Student newStudent = new Student(null, "s1", 29);
-        Student newStudent2 = new Student(null, "s2", 39);
-        newStudent.setFaculty(f1);
-        newStudent2.setFaculty(f1);
-        var s1 = template.postForEntity("/student", newStudent, Student.class).getBody();
-        var s2 = template.postForEntity("/student", newStudent2, Student.class).getBody();
+        Faculty faculty = new Faculty(1L, "IT", "red");
 
-        ResponseEntity<List<Student>> result = template.exchange("/faculty/studentsOfFaculty?facultyId=" + f1.getId(),
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<List<Student>>() {
-                });
-        assertThat(result.getBody()).containsExactlyInAnyOrder(
-                new Student(1L, "s1", 29),
-                new Student(2L, "s2", 39)
-        );
+        /*student1.setFaculty(faculty);
+        student2.setFaculty(faculty);*/
+
+        List<Student> students = new ArrayList<>();
+        students.add(student1);
+        students.add(student2);
+
+
+        when(facultyRepository.findById(any(Long.class))).thenReturn(Optional.of(faculty));
+
+        faculty.setStudents(students);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/faculty/studentsOfFaculty?facultyId=1")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(1L))
+                .andExpect(jsonPath("$[0].name").value("s1"))
+                .andExpect(jsonPath("$[0].age").value(25));
     }
 }
