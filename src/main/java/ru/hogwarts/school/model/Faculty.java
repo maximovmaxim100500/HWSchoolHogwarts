@@ -29,6 +29,16 @@ public class Faculty {
         this.color = color;
     }
 
+    @Override
+    public String toString() {
+        return "Faculty{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", color='" + color + '\'' +
+                ", students=" + students +
+                '}';
+    }
+
     public List<Student> getStudents() {
         return students;
     }
@@ -75,13 +85,4 @@ public class Faculty {
         return Objects.hash(id, name, color, students);
     }
 
-    @Override
-    public String toString() {
-        return "Faculty{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", color='" + color + '\'' +
-                ", students=" + students +
-                '}';
-    }
 }
