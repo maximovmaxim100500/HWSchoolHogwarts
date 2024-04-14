@@ -201,9 +201,10 @@ public class FacultyControllerWebMvcTest {
         students.add(student2);
 
 
+        faculty.setStudents(students);
+
         when(facultyRepository.findById(any(Long.class))).thenReturn(Optional.of(faculty));
 
-        faculty.setStudents(students);
 
         mockMvc.perform(MockMvcRequestBuilders
                         .get("/faculty/studentsOfFaculty?facultyId=1")
@@ -212,6 +213,9 @@ public class FacultyControllerWebMvcTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(1L))
                 .andExpect(jsonPath("$[0].name").value("s1"))
-                .andExpect(jsonPath("$[0].age").value(25));
+                .andExpect(jsonPath("$[0].age").value(25))
+                .andExpect(jsonPath("$[1].id").value(2L))
+                .andExpect(jsonPath("$[1].name").value("s2"))
+                .andExpect(jsonPath("$[1].age").value(30));;
     }
 }
