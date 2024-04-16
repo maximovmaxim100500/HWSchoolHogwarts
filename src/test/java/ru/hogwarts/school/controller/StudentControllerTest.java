@@ -9,6 +9,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
+import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 
 import java.util.Collections;
@@ -74,16 +75,24 @@ class StudentControllerTest {
 
     @Test
     void findAllByAgeBetween() throws Exception {
+        Student student1 = new Student(2L, "maxim", 20);  //Создаем ожидаемых из базы студентов
+        Student student2 = new Student(3L, "vasiliy", 25);
+        Student student3 = new Student(4L, "alexey", 30);
+
         Assertions
-                .assertThat(this.restTemplate.getForObject("http://localhost:" + port + "/student/ageBetween?minAge=20&maxAge=30", String.class))
-                .isNotNull();
+                .assertThat(this.restTemplate.getForObject("http://localhost:" + port + "/student/ageBetween?minAge=20&maxAge=30", Student[].class))
+                .isNotNull()
+                .containsAnyOf(student1, student2, student3);
     }
 
     @Test
-    void getFacultyOfStudent() {
+    void getFacultyOfStudent() throws Exception {
+        Faculty faculty = new Faculty(1L, "IT", "red");
+
         Assertions
-                .assertThat(this.restTemplate.getForObject("http://localhost:" + port + "/student/facultyOfStudent?studentId=2", String.class))
-                .isNotNull();
+                .assertThat(this.restTemplate.getForObject("http://localhost:" + port + "/student/facultyOfStudent?studentId=2", Faculty.class))
+                .isNotNull()
+                .isEqualTo(faculty);
     }
 
     @Test
