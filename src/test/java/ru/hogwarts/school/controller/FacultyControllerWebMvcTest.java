@@ -216,6 +216,7 @@ public class FacultyControllerWebMvcTest {
                 .andExpect(jsonPath("$[0].age").value(25))
                 .andExpect(jsonPath("$[1].id").value(2L))
                 .andExpect(jsonPath("$[1].name").value("s2"))
-                .andExpect(jsonPath("$[1].age").value(30));;
+                .andExpect(jsonPath("$[1].age").value(30));
+
     }
 }

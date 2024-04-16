@@ -1,7 +1,6 @@
 package ru.hogwarts.school.model;
 
 import jakarta.persistence.*;
-import org.hibernate.annotations.Type;
 
 import java.util.Arrays;
 import java.util.Objects;
