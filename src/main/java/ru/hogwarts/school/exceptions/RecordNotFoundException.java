@@ -1,8 +1,8 @@
-package ru.hogwarts.school.exeptions;
+package ru.hogwarts.school.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.NOT_FOUND)
-public class RecordNotFoundExeption extends RuntimeException{
+public class RecordNotFoundException extends RuntimeException{
 }

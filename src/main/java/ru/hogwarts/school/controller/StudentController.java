@@ -98,4 +98,8 @@ public class StudentController {
             is.transferTo(os);
         }
     }
+    @GetMapping("/getQuantityAllStudents")
+    public Integer getQuantityAllStudents() {
+        return studentService.getQuantityAllStudents();
+    }
 }

@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import ru.hogwarts.school.exeptions.RecordNotFoundExeption;
+import ru.hogwarts.school.exceptions.RecordNotFoundException;
 import ru.hogwarts.school.model.Avatar;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.AvatarRepository;
@@ -15,6 +15,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.List;
 
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
@@ -37,7 +38,7 @@ public class StudentService {
     }
 
     public Student findStudent(long id) {
-        return studentRepository.findById(id).orElseThrow(RecordNotFoundExeption::new);
+        return studentRepository.findById(id).orElseThrow(RecordNotFoundException::new);
     }
 
     public Student editStudent(Student student) {
@@ -48,7 +49,7 @@ public class StudentService {
         studentRepository.deleteById(id);
     }
 
-    public Collection<Student> studentsByAgeBetween(Integer minAge, Integer maxAge) {
+    public List<Student> studentsByAgeBetween(Integer minAge, Integer maxAge) {
         return studentRepository.findAllByAgeBetween(minAge, maxAge);
     }
     public Avatar findAvatar(long studentId) {
@@ -80,5 +81,9 @@ public class StudentService {
     }
     private String getExtension(String fileName) {
         return fileName.substring(fileName.lastIndexOf(".") + 1);
+    }
+
+    public Integer getQuantityAllStudents() {
+        return studentRepository.getQuantityAllStudents();
     }
 }
