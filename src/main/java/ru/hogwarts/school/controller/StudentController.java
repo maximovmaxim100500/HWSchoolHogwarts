@@ -65,6 +65,7 @@ public class StudentController {
     public Faculty getFacultyOfStudent(@RequestParam long studentId) {
         return studentService.findStudent(studentId).getFaculty();
     }
+
     @PostMapping(value = "/{id}/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> uploadAvatar(@PathVariable Long id, @RequestParam MultipartFile avatar) throws IOException {
         if (avatar.getSize() > 1024 * 300) {
@@ -74,6 +75,7 @@ public class StudentController {
         studentService.uploadAvatar(id, avatar);
         return ResponseEntity.ok().build();
     }
+
     @GetMapping(value = "/{id}/avatar/preview")
     public ResponseEntity<byte[]> downloadAvatar(@PathVariable Long id) {
         Avatar avatar = studentService.findAvatar(id);
@@ -84,6 +86,7 @@ public class StudentController {
 
         return ResponseEntity.status(HttpStatus.OK).headers(headers).body(avatar.getData());
     }
+
     @GetMapping(value = "/{id}/avatar")
     public void downloadAvatar(@PathVariable Long id, HttpServletResponse response) throws IOException {
         Avatar avatar = studentService.findAvatar(id);
