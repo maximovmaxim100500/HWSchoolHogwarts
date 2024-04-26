@@ -1,5 +1,6 @@
 package ru.hogwarts.school.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.Objects;
@@ -66,8 +67,6 @@ public class Student {
         Student student = (Student) o;
         return age == student.age && Objects.equals(id, student.id) && Objects.equals(name, student.name);
     }
-
-
     @Override
     public int hashCode() {
         return Objects.hash(id, name, age, faculty);
