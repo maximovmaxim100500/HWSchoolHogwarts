@@ -12,7 +12,7 @@ public class Student {
     private Long id;
 
     private String name;
-    private int age;
+    private Integer age;
 
     @ManyToOne
     @JoinColumn(name = "faculty_id")
@@ -22,7 +22,7 @@ public class Student {
 
     }
 
-    public Student(Long id, String name, int age) {
+    public Student(Long id, String name, Integer age) {
         this.id = id;
         this.name = name;
         this.age = age;
@@ -44,7 +44,7 @@ public class Student {
         return name;
     }
 
-    public int getAge() {
+    public Integer getAge() {
         return age;
     }
 
