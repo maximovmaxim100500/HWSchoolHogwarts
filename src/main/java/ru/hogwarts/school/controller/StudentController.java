@@ -58,8 +58,9 @@ public class StudentController {
     }
 
     @GetMapping("/ageBetween")
-    public ResponseEntity findAllByAgeBetween(@RequestParam Integer minAge, @RequestParam Integer maxAge) {
-        return ResponseEntity.ok(studentService.studentsByAgeBetween(minAge, maxAge));
+    public ResponseEntity <List<Student>>findAllByAgeBetween(@RequestParam Integer minAge, @RequestParam Integer maxAge) {
+        List<Student> students = studentService.studentsByAgeBetween(minAge, maxAge);
+        return ResponseEntity.ok(students);
     }
 
     @GetMapping("/facultyOfStudent")
@@ -72,7 +73,6 @@ public class StudentController {
         if (avatar.getSize() > 1024 * 300) {
             return ResponseEntity.badRequest().body("File is too big");
         }
-
         studentService.uploadAvatar(id, avatar);
         return ResponseEntity.ok().build();
     }
@@ -80,20 +80,16 @@ public class StudentController {
     @GetMapping(value = "/{id}/avatar/preview")
     public ResponseEntity<byte[]> downloadAvatar(@PathVariable Long id) {
         Avatar avatar = studentService.findAvatar(id);
-
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.parseMediaType(avatar.getMediaType()));
         headers.setContentLength(avatar.getData().length);
-
         return ResponseEntity.status(HttpStatus.OK).headers(headers).body(avatar.getData());
     }
 
     @GetMapping(value = "/{id}/avatar")
     public void downloadAvatar(@PathVariable Long id, HttpServletResponse response) throws IOException {
         Avatar avatar = studentService.findAvatar(id);
-
         Path path = Path.of(avatar.getFilePath());
-
         try (InputStream is = Files.newInputStream(path);
              OutputStream os = response.getOutputStream();) {
             response.setStatus(200);
