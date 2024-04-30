@@ -98,4 +98,27 @@ public class StudentController {
             is.transferTo(os);
         }
     }
+
+    @GetMapping("/getQuantityAllStudents")
+    public Integer getQuantityAllStudents() {
+        return studentService.getQuantityAllStudents();
+    }
+
+    @GetMapping("/getAverageAgeOfStudents")
+    public Integer getAverageAgeOfStudents() {
+        return studentService.getAverageAgeOfStudents();
+    }
+
+    @GetMapping("/getLatestFiveStudents")
+    public List<Student> getLatestFiveStudents() {
+        return studentService.getLatestFiveStudents();
+    }
+
+    @GetMapping("/getAllAvatarAtPage")
+    public List<Avatar> getAllAvatarAtPage(@RequestParam Integer pageNumber, @RequestParam Integer pageSize) {
+        List<Avatar> avatars = studentService.findAll(pageNumber, pageSize);
+        return avatars;
+    }
+
+
 }
