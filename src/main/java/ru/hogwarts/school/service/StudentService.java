@@ -40,6 +40,8 @@ public class StudentService {
 
     Logger logger = LoggerFactory.getLogger(StudentService.class);
 
+    public final Object flag = new Object();
+
     public Student createStudent(Student student) {
         logger.info("Был вызван метод createStudent");
         return studentRepository.save(student);
@@ -155,5 +157,11 @@ public class StudentService {
                 .average()
                 .orElse(0);
         return averageAge;
+    }
+
+    public void printStudentName(Student student) {
+        synchronized (flag) {
+            System.out.println(student.getName());
+        }
     }
 }
