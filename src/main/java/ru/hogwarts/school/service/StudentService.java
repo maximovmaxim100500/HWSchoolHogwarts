@@ -18,6 +18,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
@@ -38,6 +39,8 @@ public class StudentService {
     }
 
     Logger logger = LoggerFactory.getLogger(StudentService.class);
+
+    public final Object flag = new Object();
 
     public Student createStudent(Student student) {
         logger.info("Был вызван метод createStudent");
@@ -133,5 +136,32 @@ public class StudentService {
     public List<Student> getLatestFiveStudents() {
         logger.info("Был вызван метод getLatestFiveStudents");
         return studentRepository.getLatestFiveStudents();
+    }
+
+    public List<String> getStudentsByStartingWithA() {
+        logger.info("Был вызван метод getStudentsByStartingWithA");
+        List<Student> allStudents = studentRepository.findAll();
+        List<String> studentsNamesByStartingWithA = allStudents.stream()
+                .filter(s -> s.getName().toUpperCase().startsWith("A"))
+                .map(Student::getName)
+                .map(String::toUpperCase)
+                .sorted()
+                .collect(Collectors.toList());
+        return studentsNamesByStartingWithA;
+    }
+
+    public double getAverageAgeOfAllStudents() {
+        List<Student> allStudents = studentRepository.findAll();
+        double averageAge = allStudents.stream()
+                .mapToInt(Student::getAge)
+                .average()
+                .orElse(0);
+        return averageAge;
+    }
+
+    public void printStudentName(Student student) {
+        synchronized (flag) {
+            System.out.println(student.getName());
+        }
     }
 }

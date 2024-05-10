@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.hogwarts.school.model.Avatar;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
+import ru.hogwarts.school.repository.StudentRepository;
 import ru.hogwarts.school.service.StudentService;
 
 import java.io.IOException;
@@ -23,9 +24,11 @@ import java.util.List;
 @RequestMapping("student")
 public class StudentController {
     private final StudentService studentService;
+    private final StudentRepository studentRepository;
 
-    public StudentController(StudentService studentService) {
+    public StudentController(StudentService studentService, StudentRepository studentRepository) {
         this.studentService = studentService;
+        this.studentRepository = studentRepository;
     }
 
     @GetMapping("{id}")
@@ -58,7 +61,7 @@ public class StudentController {
     }
 
     @GetMapping("/ageBetween")
-    public ResponseEntity <List<Student>>findAllByAgeBetween(@RequestParam Integer minAge, @RequestParam Integer maxAge) {
+    public ResponseEntity<List<Student>> findAllByAgeBetween(@RequestParam Integer minAge, @RequestParam Integer maxAge) {
         List<Student> students = studentService.studentsByAgeBetween(minAge, maxAge);
         return ResponseEntity.ok(students);
     }
@@ -118,6 +121,51 @@ public class StudentController {
     public List<Avatar> getAllAvatarAtPage(@RequestParam Integer pageNumber, @RequestParam Integer pageSize) {
         List<Avatar> avatars = studentService.findAll(pageNumber, pageSize);
         return avatars;
+    }
+
+    @GetMapping("/getStudentsByStartingWithA")
+    public List<String> getStudentsByStartingWithA() {
+        return studentService.getStudentsByStartingWithA();
+    }
+
+    @GetMapping("/getAverageAgeOfAllStudents")
+    public double getAverageAgeOfAllStudents() {
+        return studentService.getAverageAgeOfAllStudents();
+    }
+
+    @GetMapping("/print-parallel")
+    public void printNamesStudent() {
+        List<Student> allStudents = studentRepository.findAll();
+        System.out.println(allStudents.get(0).getName());
+        System.out.println(allStudents.get(1).getName());
+
+        new Thread(() -> {
+            System.out.println(allStudents.get(2).getName());
+            System.out.println(allStudents.get(3).getName());
+        }).start();
+
+        new Thread(() -> {
+            System.out.println(allStudents.get(4).getName());
+            System.out.println(allStudents.get(5).getName());
+        }).start();
+    }
+
+    @GetMapping("/print-synchronized")
+    public void printNamesStudentSynchronized() {
+
+        List<Student> allStudents = studentRepository.findAll();
+        studentService.printStudentName(allStudents.get(0));
+        studentService.printStudentName(allStudents.get(1));
+
+        new Thread(() -> {
+            studentService.printStudentName(allStudents.get(2));
+            studentService.printStudentName(allStudents.get(3));
+        }).start();
+
+        new Thread(() -> {
+            studentService.printStudentName(allStudents.get(4));
+            studentService.printStudentName(allStudents.get(5));
+        }).start();
     }
 
 
