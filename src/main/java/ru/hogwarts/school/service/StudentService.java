@@ -143,6 +143,7 @@ public class StudentService {
                 .filter(s -> s.getName().toUpperCase().startsWith("A"))
                 .map(Student::getName)
                 .map(String::toUpperCase)
+                .sorted()
                 .collect(Collectors.toList());
         return studentsNamesByStartingWithA;
     }
