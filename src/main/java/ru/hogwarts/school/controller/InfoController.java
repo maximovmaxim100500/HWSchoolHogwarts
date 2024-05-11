@@ -5,8 +5,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.stream.IntStream;
-
 @RestController
 public class InfoController {
     @Value("${server.port}")
@@ -15,13 +13,4 @@ public class InfoController {
     public String getServerPort() {
         return "Порт приложения: " + serverPort;
     }
-
-    @GetMapping("/sum")
-    public Integer getSum() {
-        int sum = IntStream.rangeClosed(1, 1000_000)
-                .parallel()
-                .sum();
-        return sum;
-    }
 }
-
