@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.Query;
 import ru.hogwarts.school.model.Student;
 
 import java.util.List;
+import java.util.Collection;
+import java.util.List;
 
 public interface StudentRepository extends JpaRepository<Student, Long> {
     List<Student> findAllByAgeBetween(Integer minAge, Integer maxAge);
@@ -17,7 +19,5 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
     @Query(value = "select * from student s order by id desc  limit 5", nativeQuery = true)
     List<Student> getLatestFiveStudents();
-
-    List<Student> findAll();
 
 }
