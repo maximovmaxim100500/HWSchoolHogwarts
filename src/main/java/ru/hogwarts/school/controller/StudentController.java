@@ -119,6 +119,13 @@ public class StudentController {
         List<Avatar> avatars = studentService.findAll(pageNumber, pageSize);
         return avatars;
     }
+    @GetMapping("/getStudentsByStartingWithA")
+    public List<String> getStudentsByStartingWithA() {
+        return studentService.getStudentsByStartingWithA();
+    }
 
-
+    @GetMapping("/getAverageAgeOfAllStudents")
+    public double getAverageAgeOfAllStudents() {
+        return studentService.getAverageAgeOfAllStudents();
+    }
 }
