@@ -40,8 +40,6 @@ public class StudentService {
 
     Logger logger = LoggerFactory.getLogger(StudentService.class);
 
-    public final Object flag = new Object();
-
     public Student createStudent(Student student) {
         logger.info("Был вызван метод createStudent");
         return studentRepository.save(student);
@@ -142,9 +140,9 @@ public class StudentService {
         logger.info("Был вызван метод getStudentsByStartingWithA");
         List<Student> allStudents = studentRepository.findAll();
         List<String> studentsNamesByStartingWithA = allStudents.stream()
-                .filter(s -> s.getName().toUpperCase().startsWith("A"))
                 .map(Student::getName)
                 .map(String::toUpperCase)
+                .filter(s -> s.startsWith("A"))
                 .sorted()
                 .collect(Collectors.toList());
         return studentsNamesByStartingWithA;
@@ -159,9 +157,39 @@ public class StudentService {
         return averageAge;
     }
 
-    public void printStudentName(Student student) {
-        synchronized (flag) {
-            System.out.println(student.getName());
-        }
+    public void printStudentsNamesParallel() {
+        List<Student> allStudents = studentRepository.findAll();
+        System.out.println(allStudents.get(0).getName());
+        System.out.println(allStudents.get(1).getName());
+
+        new Thread(() -> {
+            System.out.println(allStudents.get(2).getName());
+            System.out.println(allStudents.get(3).getName());
+        }).start();
+
+        new Thread(() -> {
+            System.out.println(allStudents.get(4).getName());
+            System.out.println(allStudents.get(5).getName());
+        }).start();
+    }
+
+    public void printStudentsNamesSync() {
+        List<Student> allStudents = studentRepository.findAll();
+        printStudentName(allStudents.get(0));
+        printStudentName(allStudents.get(1));
+
+        new Thread(() -> {
+            printStudentName(allStudents.get(2));
+            printStudentName(allStudents.get(3));
+        }).start();
+
+        new Thread(() -> {
+            printStudentName(allStudents.get(4));
+            printStudentName(allStudents.get(5));
+        }).start();
+    }
+
+    public synchronized void printStudentName(Student student) {
+        System.out.println(student.getName());
     }
 }

@@ -122,11 +122,11 @@ public class StudentController {
         List<Avatar> avatars = studentService.findAll(pageNumber, pageSize);
         return avatars;
     }
-
     @GetMapping("/getStudentsByStartingWithA")
     public List<String> getStudentsByStartingWithA() {
         return studentService.getStudentsByStartingWithA();
     }
+
 
     @GetMapping("/getAverageAgeOfAllStudents")
     public double getAverageAgeOfAllStudents() {
@@ -135,38 +135,11 @@ public class StudentController {
 
     @GetMapping("/print-parallel")
     public void printNamesStudent() {
-        List<Student> allStudents = studentRepository.findAll();
-        System.out.println(allStudents.get(0).getName());
-        System.out.println(allStudents.get(1).getName());
-
-        new Thread(() -> {
-            System.out.println(allStudents.get(2).getName());
-            System.out.println(allStudents.get(3).getName());
-        }).start();
-
-        new Thread(() -> {
-            System.out.println(allStudents.get(4).getName());
-            System.out.println(allStudents.get(5).getName());
-        }).start();
+        studentService.printStudentsNamesParallel();
     }
 
     @GetMapping("/print-synchronized")
     public void printNamesStudentSynchronized() {
-
-        List<Student> allStudents = studentRepository.findAll();
-        studentService.printStudentName(allStudents.get(0));
-        studentService.printStudentName(allStudents.get(1));
-
-        new Thread(() -> {
-            studentService.printStudentName(allStudents.get(2));
-            studentService.printStudentName(allStudents.get(3));
-        }).start();
-
-        new Thread(() -> {
-            studentService.printStudentName(allStudents.get(4));
-            studentService.printStudentName(allStudents.get(5));
-        }).start();
+        studentService.printStudentsNamesSync();
     }
-
-
 }
